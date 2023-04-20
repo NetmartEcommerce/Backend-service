@@ -6,6 +6,7 @@ import rw.netmart.ecommerce.v1.enums.Erole;
 import rw.netmart.ecommerce.v1.utils.Utility;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity()
 @Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"}), @UniqueConstraint(columnNames = {"phone_number"})})
@@ -58,12 +59,19 @@ public class User {
 
     }
 
-
     public Erole getRole() {
         return role;
     }
 
+    @ManyToOne()
+    public Address address;
+
     public String fullName(){
         return this.firstName + " " +this.lastName;
     }
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    public List<User> users;
+
+
 }
