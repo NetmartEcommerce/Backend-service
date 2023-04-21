@@ -1,6 +1,8 @@
 package rw.netmart.ecommerce.v1.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 import rw.netmart.ecommerce.v1.enums.EUserStatus;
 import rw.netmart.ecommerce.v1.enums.Erole;
 import rw.netmart.ecommerce.v1.utils.Utility;
@@ -8,6 +10,8 @@ import rw.netmart.ecommerce.v1.utils.Utility;
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity()
 @Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"}), @UniqueConstraint(columnNames = {"phone_number"})})
 public class User {
@@ -24,7 +28,8 @@ public class User {
 
     private String email;
 
-    private Number phone_number;
+    @Column(name="phone_number")
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     private EUserStatus status = EUserStatus.WAIT_EMAIL_VERIFICATION;
@@ -36,21 +41,21 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Erole role;
 
-    public User(String firstName, String lastName, String email, Number phone_number, EUserStatus status, String activationCode, Erole role) {
+    public User(String firstName, String lastName, String email, String phone_number, EUserStatus status, String activationCode, Erole role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.phone_number = phone_number;
+        this.phoneNumber = phone_number;
         this.status = status;
         this.activationCode = activationCode;
         this.role = role;
     }
 
-    public User(String firstName, String lastName, String email, Number phone_number, EUserStatus status, String activationCode) {
+    public User(String firstName, String lastName, String email, String phone_number, EUserStatus status, String activationCode) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.phone_number = phone_number;
+        this.phoneNumber = phone_number;
         this.status = status;
         this.activationCode = activationCode;
     }

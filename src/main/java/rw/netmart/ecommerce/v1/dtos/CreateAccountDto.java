@@ -15,6 +15,9 @@ public class CreateAccountDto {
     private String firstName;
 
     @NotBlank
+    private String phoneNumber;
+
+    @NotBlank
     private String lastName;
 
     @Email
