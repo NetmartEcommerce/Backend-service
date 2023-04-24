@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface IUserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmailOrPhoneNumber(String email, String phoneNumber);
+
+    Optional<User> findByEmail(String email);
 }

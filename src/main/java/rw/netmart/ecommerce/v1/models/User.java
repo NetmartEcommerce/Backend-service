@@ -9,6 +9,7 @@ import rw.netmart.ecommerce.v1.utils.Utility;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class User {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private UUID id;
 
     @Column(name= "first_name")
     private String firstName;
@@ -30,6 +31,9 @@ public class User {
 
     @Column(name="phone_number")
     private String phoneNumber;
+
+    @Column(name = "password")
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private EUserStatus status = EUserStatus.WAIT_EMAIL_VERIFICATION;
