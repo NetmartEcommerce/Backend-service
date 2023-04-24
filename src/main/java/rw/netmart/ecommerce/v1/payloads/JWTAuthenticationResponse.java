@@ -1,5 +1,8 @@
 package rw.netmart.ecommerce.v1.payloads;
 
+import lombok.Data;
+
+@Data
 public class JWTAuthenticationResponse {
     private String accessToken;
 

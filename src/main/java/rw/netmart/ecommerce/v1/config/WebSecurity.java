@@ -51,7 +51,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         "/**/*.js")
                 .permitAll()
                 .antMatchers(
-                        "/api/v1/auth"
+                        "/api/v1/auth/login"
                 ).permitAll()
                 .antMatchers(
                         "/v2/api-docs",

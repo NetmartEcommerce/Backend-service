@@ -42,6 +42,7 @@ public class UserServiceImpl implements IUserServices {
         Optional<User> userOptional = this.userRepository.findByEmailOrPhoneNumber(user.getEmail(), user.getPhoneNumber());
         return userOptional.isPresent();
     }
+
     @Override
     public User registerUser(CreateAccountDto dto) {
         User user = new User();
@@ -53,6 +54,7 @@ public class UserServiceImpl implements IUserServices {
         user.setRole(Erole.USER);
         user.setStatus(EUserStatus.PENDING);
         user.setPhoneNumber(dto.getPhoneNumber());
+        user.setPassword(encodePassword);
         validateNewRegistration(user);
 
         return userRepository.save(user);

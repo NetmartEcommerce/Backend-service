@@ -7,15 +7,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rw.netmart.ecommerce.v1.dtos.LoginDto;
 import rw.netmart.ecommerce.v1.payloads.ApiResponse;
 import rw.netmart.ecommerce.v1.payloads.JWTAuthenticationResponse;
 import rw.netmart.ecommerce.v1.services.IUserServices;
 import rw.netmart.ecommerce.v1.utils.JwtTokenUtil;
+
+import javax.validation.Valid;
 
 @RestController
 @CrossOrigin
@@ -34,14 +33,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(LoginDto dto){
+    public ResponseEntity login(@Valid @RequestBody LoginDto userDetails){
         String jwt = null;
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDetails.getEmail(), userDetails.getPassword()));
         try{
             SecurityContextHolder.getContext().setAuthentication(authentication);
             jwt = jwtTokenUtil.generateToken(authentication);
+            System.out.print(jwt);
         }catch(Exception e){
-
+            System.out.println(e);
         }
             return ResponseEntity.ok(ApiResponse.success(new JWTAuthenticationResponse(jwt)));
 
