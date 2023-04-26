@@ -35,15 +35,18 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity login(@Valid @RequestBody LoginDto userDetails){
         String jwt = null;
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDetails.getEmail(), userDetails.getPassword()));
-        try{
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            jwt = jwtTokenUtil.generateToken(authentication);
-            System.out.print(jwt);
-        }catch(Exception e){
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDetails.getEmail(), userDetails.getPassword()));
+            if (authentication.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                jwt = jwtTokenUtil.generateToken(authentication);
+
+            } else {
+                System.out.println("Authentication failed for user " + userDetails.getEmail());
+            }
+        }catch (Exception e){
             System.out.println(e);
         }
-            return ResponseEntity.ok(ApiResponse.success(new JWTAuthenticationResponse(jwt)));
-
+        return ResponseEntity.ok(ApiResponse.success(new JWTAuthenticationResponse(jwt)));
     }
 }

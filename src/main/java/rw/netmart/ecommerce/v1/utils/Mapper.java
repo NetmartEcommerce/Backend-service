@@ -15,6 +15,14 @@ public class Mapper {
         user.setId(null);
         return user;
     }
+    public static String encode(String raw){
+        return passwordEncoder.encode(raw);
+    }
+
+    public static boolean compare(String encoded, String raw){
+        return passwordEncoder.matches(raw, encoded);
+    }
+
     public static User getUserFromDTO(Object object) {
         return modelMapper.map(object, User.class);
     }

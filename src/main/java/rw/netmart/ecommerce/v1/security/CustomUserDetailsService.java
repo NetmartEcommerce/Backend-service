@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return UserPrincipal.create(user);
     }
 
-    @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws BadRequestException {
         User user = this.userRepository.findByEmail(email).orElseThrow(()-> new BadRequestException("User with email " + email + " not found!"));
         if(user.getStatus() == EUserStatus.DEACTIVATED)

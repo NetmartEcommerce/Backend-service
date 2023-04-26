@@ -1,17 +1,19 @@
 package rw.netmart.ecommerce.v1.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import rw.netmart.ecommerce.v1.security.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -19,10 +21,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+
+    @Autowired
+    public BCryptPasswordEncoder passwordEncoder;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
@@ -48,12 +52,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/email-templates/**",
                         "/temp-url",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers(
-                        "/api/v1/auth/login"
-                ).permitAll()
-                .antMatchers(
+                        "/api/v1/auth/login",
+                        "/**/*.js",
                         "/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources/**",
@@ -64,5 +64,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
 
+    }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 }

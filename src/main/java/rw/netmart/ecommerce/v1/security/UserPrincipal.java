@@ -41,7 +41,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override
@@ -52,36 +52,35 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
     public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-
-        authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
 
         return new UserPrincipal(
                 user.getId(),
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                        user.getPhoneNumber(),
+                user.getPhoneNumber(),
                 user.getAddress(),
-                        user.getPassword(),
+                user.getPassword(),
                 user.getStatus(),
-                        authorities);
+                authorities);
     }
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

@@ -33,7 +33,6 @@ public class UserServiceImpl implements IUserServices {
 
     public void validateNewRegistration(User user){
         if(isNotUnique(user)){
-            System.out.println("DUPICATED!!");
             throw new BadRequestException(String.format("User with email '%s' or phone number '%s' already exists", user.getEmail(), user.getPhoneNumber()));
         }
     }
@@ -55,6 +54,7 @@ public class UserServiceImpl implements IUserServices {
         user.setStatus(EUserStatus.PENDING);
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setPassword(encodePassword);
+
         validateNewRegistration(user);
 
         return userRepository.save(user);
@@ -72,6 +72,7 @@ public class UserServiceImpl implements IUserServices {
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
         user.setRole(Erole.ADMIN);
+        user.setPassword(encodePassword);
         user.setPhoneNumber(dto.getPhoneNumber());
 
         validateNewRegistration(user);
