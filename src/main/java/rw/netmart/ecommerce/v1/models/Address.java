@@ -29,6 +29,4 @@ public class Address {
     private String appartment;
 
 
-
-
 }

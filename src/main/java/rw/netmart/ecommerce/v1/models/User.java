@@ -64,6 +64,14 @@ public class User {
         this.activationCode = activationCode;
     }
 
+    public User updateUser(User user){
+        this.setEmail(user.getEmail());
+        this.setFirstName(user.getFirstName());
+        this.setLastName(user.getLastName());
+        this.setPhoneNumber(user.getPhoneNumber());
+        return user;
+    }
+
     public User() {
 
     }
