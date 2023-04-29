@@ -2,13 +2,12 @@ package rw.netmart.ecommerce.v1.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import rw.netmart.ecommerce.v1.utils.JwtTokenUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,14 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
-
-@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
-
-    private JwtTokenUtil tokenProvider;
-
-
+    @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);

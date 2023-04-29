@@ -1,5 +1,6 @@
 package rw.netmart.ecommerce.v1.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,19 +8,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import rw.netmart.ecommerce.v1.enums.EUserStatus;
-import rw.netmart.ecommerce.v1.models.Address;
 import rw.netmart.ecommerce.v1.models.User;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
-
     private UUID id;
 
     private String email;
@@ -28,35 +29,22 @@ public class UserPrincipal implements UserDetails {
 
     private String lastName;
 
-    private String phoneNumber;
+    private String mobile;
 
-    private Address address;
 
+    @JsonIgnore
     private String password;
 
     private EUserStatus status;
 
 
-    private List<? extends GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
     public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+
+        authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
 
         return new UserPrincipal(
                 user.getId(),
@@ -64,11 +52,31 @@ public class UserPrincipal implements UserDetails {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPhoneNumber(),
-                user.getAddress(),
                 user.getPassword(),
                 user.getStatus(),
                 authorities);
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
     @Override
     public boolean isAccountNonLocked() {
         return true;

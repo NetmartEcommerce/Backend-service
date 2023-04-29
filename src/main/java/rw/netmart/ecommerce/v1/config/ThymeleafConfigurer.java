@@ -19,6 +19,7 @@ public class ThymeleafConfigurer {
         return templateEngine;
     }
 
+
     @Bean
     public ClassLoaderTemplateResolver htmlTemplateResolver(){
         ClassLoaderTemplateResolver emailTemplateResolver = new ClassLoaderTemplateResolver();

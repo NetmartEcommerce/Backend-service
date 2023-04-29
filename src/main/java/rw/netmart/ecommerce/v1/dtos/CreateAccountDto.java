@@ -1,5 +1,6 @@
 package rw.netmart.ecommerce.v1.dtos;
 import lombok.*;
+import rw.netmart.ecommerce.v1.enums.Erole;
 import rw.netmart.ecommerce.v1.security.ValidPassword;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
@@ -25,4 +26,7 @@ public class CreateAccountDto {
 
     @ValidPassword
     private String password;
+
+    @NotBlank
+    private Erole erole;
 }

@@ -8,7 +8,9 @@ import rw.netmart.ecommerce.v1.enums.Erole;
 import rw.netmart.ecommerce.v1.utils.Utility;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -42,17 +44,14 @@ public class User {
     @Column(name="activation_code")
     private String activationCode = Utility.randomUUID(6, 0, 'N');
 
-    @Enumerated(EnumType.STRING)
-    private Erole role;
-
-    public User(String firstName, String lastName, String email, String phone_number, EUserStatus status, String activationCode, Erole role) {
+    public User(String firstName, String lastName, String email, String phone_number, EUserStatus status, String activationCode, Set<Role> eroles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phone_number;
         this.status = status;
         this.activationCode = activationCode;
-        this.role = role;
+        this.roles = eroles;
     }
 
     public User(String firstName, String lastName, String email, String phone_number, EUserStatus status, String activationCode) {
@@ -76,12 +75,17 @@ public class User {
 
     }
 
-    public Erole getRole() {
-        return role;
-    }
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    @ManyToOne()
-    public Address address;
+    @OneToMany()
+    @JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
+    private Set<Role> address = new HashSet<>();
+
+
+
 
     public String fullName(){
         return this.firstName + " " +this.lastName;

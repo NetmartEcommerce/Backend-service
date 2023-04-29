@@ -1,9 +1,15 @@
 package rw.netmart.ecommerce.v1.servicesImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import rw.netmart.ecommerce.v1.dtos.CreateAccountDto;
 import rw.netmart.ecommerce.v1.dtos.RegisterAdminDto;
 import rw.netmart.ecommerce.v1.dtos.UpdateUserDto;
@@ -11,13 +17,15 @@ import rw.netmart.ecommerce.v1.enums.EUserStatus;
 import rw.netmart.ecommerce.v1.enums.Erole;
 import rw.netmart.ecommerce.v1.exceptions.BadRequestException;
 import rw.netmart.ecommerce.v1.exceptions.ResourceNotFoundException;
-import rw.netmart.ecommerce.v1.models.Mail;
+import rw.netmart.ecommerce.v1.models.Address;
 import rw.netmart.ecommerce.v1.models.User;
+import rw.netmart.ecommerce.v1.payloads.ApiResponse;
 import rw.netmart.ecommerce.v1.repositories.IUserRepository;
 import rw.netmart.ecommerce.v1.services.IUserServices;
 
 
 import javax.mail.MessagingException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -53,10 +61,10 @@ public class UserServiceImpl implements IUserServices {
     public User registerUser(CreateAccountDto dto) {
         User user = new User();
         String encodePassword = bCryptPasswordEncoder.encode(dto.getPassword());
+        dto.getErole();
         user.setEmail(dto.getEmail());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
-        user.setRole(Erole.USER);
         user.setStatus(EUserStatus.PENDING);
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setPassword(encodePassword);
@@ -81,7 +89,6 @@ public class UserServiceImpl implements IUserServices {
         user.setEmail(dto.getEmail());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
-        user.setRole(Erole.ADMIN);
         user.setPassword(encodePassword);
         user.setPhoneNumber(dto.getPhoneNumber());
 
@@ -91,20 +98,45 @@ public class UserServiceImpl implements IUserServices {
     }
 
     @Override
+    public User getLoggedInUser(){
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == "anonymousUser")
+            throw new BadRequestException("You are not logged in, try to log in");
+        String email;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal instanceof UserDetails){
+            email = ((UserDetails) principal).getUsername();
+        }else{
+            email =  principal.toString();
+        }
+        return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User", "email", email));
+    }
+
+    @Override
     public User getUserByEmail(String email) throws BadRequestException{
         return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User" ,"email", email));
     }
 
     @Override
     public String verifyEmail(String email, String activationCode) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof UsernamePasswordAuthenticationToken) {
+            System.out.println(authentication);
+            System.out.println("yes");
+            // User is authenticated with their actual credentials
+        } else {
+            System.out.println(authentication);
+            System.out.println("no");
+            // User is not authenticated or authenticated anonymously
+        }
         User user = getUserByEmail(email);
-        if(user.getActivationCode() == activationCode){
+        if(Objects.equals(user.getActivationCode(), activationCode)){
             user.setStatus(EUserStatus.ACTIVE);
             userRepository.save(user);
             return "Account successfully verified";
         }
         return "Could not verify account!";
     }
+
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Override
@@ -125,6 +157,10 @@ public class UserServiceImpl implements IUserServices {
        userRepository.save(user);
        return user;
     }
+
+
+
+
 
     @Override
     public User deleteAccount(String email, String password) {

@@ -1,0 +1,58 @@
+package rw.netmart.ecommerce.v1.servicesImpl;
+
+import org.springframework.stereotype.Service;
+import rw.netmart.ecommerce.v1.dtos.CreateAddressDto;
+import rw.netmart.ecommerce.v1.exceptions.ResourceNotFoundException;
+import rw.netmart.ecommerce.v1.models.Address;
+import rw.netmart.ecommerce.v1.models.User;
+import rw.netmart.ecommerce.v1.repositories.IAddressRepository;
+import rw.netmart.ecommerce.v1.repositories.IUserRepository;
+import rw.netmart.ecommerce.v1.services.IAddressService;
+import rw.netmart.ecommerce.v1.services.IUserServices;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service
+public class AddressServiceImpl implements IAddressService {
+
+    private final IAddressRepository addressRepository;
+    private final IUserServices userService;
+    public AddressServiceImpl(IAddressRepository addressRepository, IUserRepository userRepository, IUserServices userService) {
+        this.addressRepository = addressRepository;
+        this.userService = userService;
+    }
+
+    @Override
+    public Address createAddress(CreateAddressDto dto) {
+        Address address = new Address(dto);
+        User user = userService.getLoggedInUser();
+        address.setUser(user);
+        address = addressRepository.save(address);
+        return address;
+    }
+
+    @Override
+    public Address updateAddress(UUID id, CreateAddressDto dto) {
+        Optional<Address> address = addressRepository.findById(id);
+        return null;
+    }
+
+    public Address findById(UUID id){
+        return addressRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Address"));
+    }
+
+    @Override
+    public Address removeAddress(UUID id) {
+        Address address = findById(id);
+        addressRepository.delete(address);
+        return address;
+    }
+
+    @Override
+    public List<Address> getAddresses(UUID id) {
+        return null;
+    }
+
+}
