@@ -152,7 +152,7 @@ public class UserServiceImpl implements IUserServices {
 
     @Override
     public User updateUserDetails(UpdateUserDto userdto){
-        User user = getUserByEmail(userdto.getEmail());
+        User user = getLoggedInUser();
        user.setEmail(user.getEmail());
        user.setFirstName(user.getFirstName());
        user.setLastName(user.getLastName());
