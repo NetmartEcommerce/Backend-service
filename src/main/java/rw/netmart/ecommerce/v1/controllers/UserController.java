@@ -27,7 +27,12 @@ public class UserController {
 
     @PostMapping(path="/register")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody CreateAccountDto user){
-     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(userService.registerUser(user)));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(userService.registerUser(user)));
+        }catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
     }
 
     @PostMapping(path="/register-admin")

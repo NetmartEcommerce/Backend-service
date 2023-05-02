@@ -1,6 +1,7 @@
 package rw.netmart.ecommerce.v1.controllers;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +15,6 @@ import rw.netmart.ecommerce.v1.payloads.ApiResponse;
 import rw.netmart.ecommerce.v1.payloads.JWTAuthenticationResponse;
 import rw.netmart.ecommerce.v1.security.JwtTokenProvider;
 import rw.netmart.ecommerce.v1.services.IUserServices;
-import rw.netmart.ecommerce.v1.utils.JwtTokenUtil;
 
 import javax.validation.Valid;
 
@@ -34,22 +34,16 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity login(@Valid @RequestBody LoginDto userDetails){
+    @PostMapping(path = "/login")
+    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginDto signInDTO){
         String jwt = null;
-        try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDetails.getEmail(), userDetails.getPassword()));
-            if (authentication.isAuthenticated()) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                jwt = jwtTokenProvider.generateToken(authentication);
-            } else {
-                System.out.println("Authentication failed for user " + userDetails.getEmail());
-            }
-        }catch (Exception e){
-            System.out.println(e);
-            throw new BadRequestException(e.getMessage());
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(),signInDTO.getPassword()));
+        try{
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            jwt = jwtTokenProvider.generateToken(authentication);
         }
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
+        catch (Exception e){
+        }
         return ResponseEntity.ok(ApiResponse.success(new JWTAuthenticationResponse(jwt)));
     }
 }

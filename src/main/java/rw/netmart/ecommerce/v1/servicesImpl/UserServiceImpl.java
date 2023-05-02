@@ -1,7 +1,6 @@
 package rw.netmart.ecommerce.v1.servicesImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -9,22 +8,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import rw.netmart.ecommerce.v1.dtos.CreateAccountDto;
 import rw.netmart.ecommerce.v1.dtos.RegisterAdminDto;
 import rw.netmart.ecommerce.v1.dtos.UpdateUserDto;
 import rw.netmart.ecommerce.v1.enums.EUserStatus;
-import rw.netmart.ecommerce.v1.enums.Erole;
 import rw.netmart.ecommerce.v1.exceptions.BadRequestException;
 import rw.netmart.ecommerce.v1.exceptions.ResourceNotFoundException;
-import rw.netmart.ecommerce.v1.models.Address;
+import rw.netmart.ecommerce.v1.models.Role;
 import rw.netmart.ecommerce.v1.models.User;
-import rw.netmart.ecommerce.v1.payloads.ApiResponse;
 import rw.netmart.ecommerce.v1.repositories.IUserRepository;
+import rw.netmart.ecommerce.v1.services.IRoleService;
 import rw.netmart.ecommerce.v1.services.IUserServices;
 
 
 import javax.mail.MessagingException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,14 +33,15 @@ public class UserServiceImpl implements IUserServices {
     private String adminRegistrationKey;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final IUserRepository userRepository;
-
+    private final IRoleService  roleService;
     private final MailService mailService;
 
 
     @Autowired
-    public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, IUserRepository userRepository, MailService mailService) {
+    public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, IUserRepository userRepository, IRoleService roleService, MailService mailService) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
+        this.roleService = roleService;
         this.mailService = mailService;
     }
 
@@ -61,13 +60,14 @@ public class UserServiceImpl implements IUserServices {
     public User registerUser(CreateAccountDto dto) {
         User user = new User();
         String encodePassword = bCryptPasswordEncoder.encode(dto.getPassword());
-        dto.getErole();
+        Role role = roleService.findByName(dto.getErole());
         user.setEmail(dto.getEmail());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
         user.setStatus(EUserStatus.PENDING);
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setPassword(encodePassword);
+        user.setRoles(Collections.singleton(role));
 
         validateNewRegistration(user);
         try{
@@ -99,17 +99,22 @@ public class UserServiceImpl implements IUserServices {
 
     @Override
     public User getLoggedInUser(){
-        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() == "anonymousUser")
-            throw new BadRequestException("You are not logged in, try to log in");
-        String email;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal instanceof UserDetails){
-            email = ((UserDetails) principal).getUsername();
-        }else{
-            email =  principal.toString();
+        try {
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() == "anonymousUser")
+                throw new BadRequestException("You are not logged in, try to log in");
+            String email;
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof UserDetails) {
+                email = ((UserDetails) principal).getUsername();
+            } else {
+                email = principal.toString();
+            }
+            return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        }catch(Exception e){
+            System.out.println(e);
         }
-        return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User", "email", email));
-    }
+        return null;
+        }
 
     @Override
     public User getUserByEmail(String email) throws BadRequestException{
@@ -120,11 +125,9 @@ public class UserServiceImpl implements IUserServices {
     public String verifyEmail(String email, String activationCode) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof UsernamePasswordAuthenticationToken) {
-            System.out.println(authentication);
             System.out.println("yes");
             // User is authenticated with their actual credentials
         } else {
-            System.out.println(authentication);
             System.out.println("no");
             // User is not authenticated or authenticated anonymously
         }

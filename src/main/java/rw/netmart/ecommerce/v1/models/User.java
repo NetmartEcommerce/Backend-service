@@ -80,7 +80,7 @@ public class User {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany()
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
     private Set<Role> address = new HashSet<>();
 
@@ -91,8 +91,7 @@ public class User {
         return this.firstName + " " +this.lastName;
     }
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    public List<User> users;
+
 
 
 }
