@@ -175,5 +175,20 @@ public class UserServiceImpl implements IUserServices {
         throw new BadRequestException("Could not perform task!");
     }
 
+    @Override
+    public User save(User user) {
+        return this.userRepository.save(user);
+    }
+
+    @Override
+    public boolean verifyCode(String email, String activationCode) {
+
+        if(userRepository.existsByEmailAndActivationCode(email, activationCode)){
+            return true;
+        }else{
+            throw new BadRequestException("Invalid code!");
+        }
+    }
+
 
 }

@@ -24,4 +24,7 @@ public interface IUserServices {
     User deleteAccount(String email , String password);
 
 
+    User save(User user);
+
+    boolean verifyCode(String email, String activationCode);
 }

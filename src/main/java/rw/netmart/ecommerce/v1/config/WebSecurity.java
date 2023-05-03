@@ -77,10 +77,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/" +
                                 "",
-                        "/api/v1/users/admin/register",
-                        "/api/v1/users/accStaff/register",
-                        "/api/v1/location-address/**/**/**",
-                        "/api/v1/head-teachers/create",
                         "/favicon.ico",
                         "/**/*.png",
                         "/**/*.gif",
@@ -93,7 +89,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         "/temp-url",
                         "/**/*.js").permitAll()
                 .antMatchers(
-                        "/api/v1/auth/**"
+                        "/api/v1/auth/login",
+                        "/api/v1/users/register",
+                        "/api/v1/auth/verify-email",
+                        "/api/v1/auth/forgot-password",
+                        "/api/v1/auth/reset-password",
+                        "/api/v1/auth/verify-code"
+
                 ).permitAll()
                 .antMatchers(
                         "/v2/api-docs",

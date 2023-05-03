@@ -7,6 +7,7 @@ import lombok.Setter;
 import rw.netmart.ecommerce.v1.dtos.CreateAddressDto;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
     private String country;
 
     private String city;
@@ -27,7 +28,7 @@ public class Address {
 
     private String buildingName;
 
-    private String appartment;
+    private String apartment;
 
     @ManyToOne
     @JoinColumn(name= "user_id")
@@ -35,7 +36,7 @@ public class Address {
 
     public Address(CreateAddressDto dto) {
         this.setCountry(dto.getCountry());
-        this.setAppartment(dto.getAppartment());
+        this.setApartment(dto.getAppartment());
         this.setBuildingName(dto.getBuildingName());
         this.setStreetName(dto.getStreetName());
         this.setCity(dto.getCity());

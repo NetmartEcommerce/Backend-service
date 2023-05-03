@@ -11,7 +11,6 @@ import rw.netmart.ecommerce.v1.services.IAddressService;
 import rw.netmart.ecommerce.v1.services.IUserServices;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -35,8 +34,14 @@ public class AddressServiceImpl implements IAddressService {
 
     @Override
     public Address updateAddress(UUID id, CreateAddressDto dto) {
-        Optional<Address> address = addressRepository.findById(id);
-        return null;
+        Address address = addressRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Address", "City", dto.getCity()));
+        address.setStreetName(dto.getStreetName());
+        address.setCountry(dto.getCountry());
+        address.setApartment(dto.getAppartment());
+        address.setCity(dto.getCity());
+        address.setBuildingName(dto.getBuildingName());
+        addressRepository.save(address);
+        return address;
     }
 
     public Address findById(UUID id){

@@ -25,6 +25,10 @@ public class ApiResponse {
         this.data = data;
     }
 
+    public ApiResponse(boolean success) {
+        this.success = success;
+    }
+
     public static ApiResponse success(Object data) {
         return new ApiResponse(true, data);
     }
