@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import rw.netmart.ecommerce.v1.enums.EUserStatus;
-import rw.netmart.ecommerce.v1.enums.Erole;
 import rw.netmart.ecommerce.v1.utils.Utility;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
