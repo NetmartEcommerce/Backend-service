@@ -16,6 +16,4 @@ public class CreateManufacturerDto  {
     private String name;
 
     private String description;
-    @NotBlank
-    private Long id;
 }
