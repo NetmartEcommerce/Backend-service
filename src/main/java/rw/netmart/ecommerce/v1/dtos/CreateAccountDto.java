@@ -27,6 +27,4 @@ public class CreateAccountDto {
     @ValidPassword
     private String password;
 
-    @NonNull
-    private Erole erole;
 }

@@ -34,12 +34,14 @@ public class AddressServiceImpl implements IAddressService {
 
     @Override
     public Address updateAddress(UUID id, CreateAddressDto dto) {
-        Address address = addressRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Address", "City", dto.getCity()));
+        Address address = addressRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Address", "Cell", dto.getCell()));
         address.setStreetName(dto.getStreetName());
         address.setCountry(dto.getCountry());
-        address.setApartment(dto.getAppartment());
-        address.setCity(dto.getCity());
-        address.setBuildingName(dto.getBuildingName());
+        address.setProvince(dto.getProvince());
+        address.setDistrict(dto.getDistrict());
+        address.setSector(dto.getSector());
+        address.setVillage(dto.getVillage());
+        address.setCell(dto.getCell());
         addressRepository.save(address);
         return address;
     }

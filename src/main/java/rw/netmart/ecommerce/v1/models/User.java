@@ -3,6 +3,8 @@ package rw.netmart.ecommerce.v1.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import rw.netmart.ecommerce.v1.enums.EUserStatus;
 import rw.netmart.ecommerce.v1.utils.Utility;
 
@@ -15,6 +17,7 @@ import java.util.UUID;
 @Setter
 @Entity()
 @Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"}), @UniqueConstraint(columnNames = {"phone_number"})})
+@OnDelete(action = OnDeleteAction.CASCADE)
 public class User {
 
     @Id
@@ -78,7 +81,7 @@ public class User {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
     @JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
     private Set<Role> address = new HashSet<>();
 

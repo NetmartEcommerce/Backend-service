@@ -12,6 +12,7 @@ import rw.netmart.ecommerce.v1.dtos.CreateAccountDto;
 import rw.netmart.ecommerce.v1.dtos.RegisterAdminDto;
 import rw.netmart.ecommerce.v1.dtos.UpdateUserDto;
 import rw.netmart.ecommerce.v1.enums.EUserStatus;
+import rw.netmart.ecommerce.v1.enums.Erole;
 import rw.netmart.ecommerce.v1.exceptions.BadRequestException;
 import rw.netmart.ecommerce.v1.exceptions.ResourceNotFoundException;
 import rw.netmart.ecommerce.v1.models.Role;
@@ -60,7 +61,7 @@ public class UserServiceImpl implements IUserServices {
     public User registerUser(CreateAccountDto dto) {
         User user = new User();
         String encodePassword = bCryptPasswordEncoder.encode(dto.getPassword());
-        Role role = roleService.findByName(dto.getErole());
+        Role role = roleService.findByName(Erole.USER);
         user.setEmail(dto.getEmail());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
@@ -69,12 +70,14 @@ public class UserServiceImpl implements IUserServices {
         user.setPassword(encodePassword);
         user.setRoles(Collections.singleton(role));
 
-        validateNewRegistration(user);
-        try{
-            mailService.sendAccountVerificationEmail(user);
-        }catch (MessagingException e){
-            System.out.println(e);
+        if(userRepository.existsByEmailOrPhoneNumber(dto.getEmail(), dto.getPhoneNumber())){
+            throw new BadRequestException(String.format("User with email '%s' or phone number '%s' already exists", user.getEmail(), user.getPhoneNumber()));
         }
+//        try{
+//            mailService.sendAccountVerificationEmail(user);
+//        }catch (MessagingException e){
+//            System.out.println(e);
+//        }
         return userRepository.save(user);
     }
 

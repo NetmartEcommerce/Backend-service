@@ -18,27 +18,33 @@ import java.util.UUID;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
     private String country;
 
-    private String city;
+    private String province;
+
+    private String district;
+
+    private String sector;
+
+    private String cell;
+
+    private String village;
 
     private String streetName;
 
-    private String buildingName;
-
-    private String apartment;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "user_id")
     private User user;
 
     public Address(CreateAddressDto dto) {
         this.setCountry(dto.getCountry());
-        this.setApartment(dto.getAppartment());
-        this.setBuildingName(dto.getBuildingName());
+        this.setProvince(dto.getProvince());
+        this.setDistrict(dto.getDistrict());
+        this.setSector(dto.getSector());
+        this.setCell(dto.getCell());
+        this.setVillage(dto.getVillage());
         this.setStreetName(dto.getStreetName());
-        this.setCity(dto.getCity());
     }
 }

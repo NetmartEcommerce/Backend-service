@@ -22,9 +22,9 @@ public class IllustrationController {
     }
 
     @PostMapping(value="/create", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity createIllustration(@Valid @RequestParam("description") String description, @RequestParam("name") String name, @RequestParam("file") MultipartFile file){
+    public ResponseEntity createIllustration(@Valid @RequestParam("description") String description, @RequestParam("name") String name, @RequestParam("file") MultipartFile file, @RequestParam("id") UUID id){
         CreateIllustrationDto dto = new CreateIllustrationDto(description, name);
-        return ResponseEntity.ok().body(ApiResponse.success(illustrationService.createIllustration(dto, file)));
+        return ResponseEntity.ok().body(ApiResponse.success(illustrationService.createIllustration(dto, file, id)));
     }
 
     @DeleteMapping(path = "/delete")

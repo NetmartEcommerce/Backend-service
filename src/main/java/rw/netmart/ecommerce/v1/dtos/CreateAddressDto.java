@@ -15,13 +15,18 @@ public class CreateAddressDto {
     public String country;
 
     @NotBlank
-    public String city;
+    public String province;
 
+    @NotBlank
+    public String district;
+
+    @NotBlank
+    public String sector;
+
+    @NotBlank
+    public String village;
     @NotBlank
     public String streetName;
 
-    @NotBlank
-    public String buildingName;
-
-    public String appartment;
+    public String cell;
 }

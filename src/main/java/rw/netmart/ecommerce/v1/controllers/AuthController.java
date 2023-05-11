@@ -48,13 +48,9 @@ public class AuthController {
     public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginDto signInDTO) throws Exception {
         String jwt = null;
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(),signInDTO.getPassword()));
-        try{
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            jwt = jwtTokenProvider.generateToken(authentication);
-        }
-        catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        jwt = jwtTokenProvider.generateToken(authentication);
+
         return ResponseEntity.ok(ApiResponse.success(new JWTAuthenticationResponse(jwt)));
     }
 

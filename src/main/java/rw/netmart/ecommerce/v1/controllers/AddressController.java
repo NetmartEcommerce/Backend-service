@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("api/v1/address")
+@CrossOrigin
 public class AddressController {
 
     private final IAddressService addressService;

@@ -26,6 +26,10 @@ public class Illustration {
     @JoinColumn(name="file_id")
     private File file;
 
+    @ManyToOne
+    @JoinColumn(name = "illustration_id")
+    private Product product;
+
     public Illustration(String color, String description) {
         this.color = color;
         this.description = description;
