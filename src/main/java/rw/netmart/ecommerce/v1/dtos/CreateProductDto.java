@@ -25,7 +25,7 @@ public class CreateProductDto {
     private String description;
 
     private UUID manufacturerId;
-    private Integer price;
+    private Float price;
 
 
     private Integer discountRate;

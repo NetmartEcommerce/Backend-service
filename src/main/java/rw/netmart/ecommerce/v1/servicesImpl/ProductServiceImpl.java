@@ -48,10 +48,10 @@ public class ProductServiceImpl implements IProductService {
         SubCategory category = subCategoriesRepository.findById(dto.getCategoryid()).orElseThrow(()-> new ResourceNotFoundException("Illustration"));
         Manufacturer manufacturer = manufacturerRepository.findById(dto.getManufacturerId()).orElseThrow(()-> new ResourceNotFoundException(("Manufacturer")));
         product.setCategory(category);
-        product.setName(dto.getName());
+//        product.setName(dto.getName());
         product.setModel(dto.getModel());
         product.setDescription(dto.getDescription());
-        product.setPrice(dto.getPrice());
+        product.setPrice(Float.valueOf(dto.getPrice()));
         product.setInStock(dto.getInStock());
         product.setManufacturer(manufacturer);
         productRepository.save(product);

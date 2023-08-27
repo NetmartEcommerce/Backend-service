@@ -14,5 +14,5 @@ public interface ManufacturerService {
 
     String removeManufacturer(UUID id);
 
-    List<Manufacturer> getManufacturer();
+    List<Manufacturer> getManufacturers();
 }

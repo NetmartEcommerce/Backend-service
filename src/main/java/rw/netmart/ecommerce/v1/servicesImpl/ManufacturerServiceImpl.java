@@ -2,6 +2,7 @@ package rw.netmart.ecommerce.v1.servicesImpl;
 
 import org.springframework.stereotype.Service;
 import rw.netmart.ecommerce.v1.dtos.CreateManufacturerDto;
+import rw.netmart.ecommerce.v1.enums.EManufacturerStatus;
 import rw.netmart.ecommerce.v1.exceptions.ResourceNotFoundException;
 import rw.netmart.ecommerce.v1.models.Manufacturer;
 import rw.netmart.ecommerce.v1.repositories.ManufacturerRepository;
@@ -24,6 +25,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
         Manufacturer manufacturer = new Manufacturer();
         manufacturer.setName(dto.getName());
         manufacturer.setDescription(dto.getDescription());
+        manufacturer.setStatus(EManufacturerStatus.ACTIVE);
         manufacturerRepository.save(manufacturer);
         return manufacturer;
     }
@@ -46,7 +48,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     }
 
     @Override
-    public List<Manufacturer> getManufacturer() {
+    public List<Manufacturer> getManufacturers() {
         return manufacturerRepository.findAll();
     }
 }

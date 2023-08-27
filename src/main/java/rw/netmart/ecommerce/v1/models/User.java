@@ -83,7 +83,8 @@ public class User {
 
     @OneToMany
     @JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private Set<Role> address = new HashSet<>();
+    @JsonIgnore
+    private Set<Address> address = new HashSet<>();
 
 
 

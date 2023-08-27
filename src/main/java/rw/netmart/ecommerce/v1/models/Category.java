@@ -21,6 +21,7 @@ public class Category {
 
     private String description;
 
+
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "sub_categories", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "subcategory_id"))
     private Set<SubCategory> subCategories;

@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/manufacturers")
+@CrossOrigin
 public class ManufacturerController {
 
     private final ManufacturerService manufacturerService;
@@ -31,8 +32,8 @@ public class ManufacturerController {
         return ResponseEntity.ok().body(ApiResponse.success(manufacturerService.removeManufacturer(id)));
     }
 
-    @GetMapping("update")
+    @GetMapping("get")
     public ResponseEntity<ApiResponse> getManufacturers(){
-        return ResponseEntity.ok().body(ApiResponse.success(manufacturerService.getManufacturer()));
+        return ResponseEntity.ok().body(ApiResponse.success(manufacturerService.getManufacturers()));
     }
 }

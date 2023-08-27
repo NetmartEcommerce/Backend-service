@@ -88,12 +88,15 @@ public class UserServiceImpl implements IUserServices {
 
         User user = new User();
         String encodePassword = bCryptPasswordEncoder.encode(dto.getPassword());
+        Role role = roleService.findByName(Erole.ADMIN);
 
         user.setEmail(dto.getEmail());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
         user.setPassword(encodePassword);
         user.setPhoneNumber(dto.getPhoneNumber());
+        user.setStatus(EUserStatus.ACTIVE);
+        user.setRoles(Collections.singleton(role));
 
         validateNewRegistration(user);
 

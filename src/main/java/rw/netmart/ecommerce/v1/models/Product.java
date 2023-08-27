@@ -19,22 +19,30 @@ public class Product {
     @GeneratedValue
     private UUID id;
 
-    private String name;
+    private String description;
+
+    private String text;
+
+    private String company;
+
+    private String brand;
+
+    private String model;
+
+    private String currency;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private SubCategory category;
 
-    private String model;
-
-    private String description;
-
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Manufacturer manufacturer;
-    private Integer price;
+    private Float price;
 
     private Integer discountRate;
+
+    private Float crossedPrice;
 
     private Integer inStock;
 
@@ -44,15 +52,17 @@ public class Product {
     @JoinTable(name = "product_manufacturer", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "manufacturer_id"))
     private List<Illustration> illustrations;
 
-    public Product(String name, SubCategory category, String model, String description, Manufacturer manufacturer, Integer pricer, Integer discountRate, Integer inStock, Integer sold) {
-        this.name = name;
+    public Product(SubCategory category, String model, String description, Manufacturer manufacturer, Float price, Integer discountRate, Integer inStock, Integer sold) {
         this.category = category;
         this.model = model;
         this.description = description;
         this.manufacturer = manufacturer;
-        this.price = pricer;
+        this.price = price;
         this.discountRate = discountRate;
         this.inStock = inStock;
         this.sold = sold;
+    }
+
+    public Product(String name, SubCategory category, String model, String description, Manufacturer manufacturer, Float price, Integer discountRate, Integer inStock, Integer sold) {
     }
 }

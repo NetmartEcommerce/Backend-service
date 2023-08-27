@@ -1,6 +1,5 @@
 package rw.netmart.ecommerce.v1.config;
 
-import org.hibernate.context.internal.ThreadLocalSessionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import rw.netmart.ecommerce.v1.security.CustomUserDetailsService;
@@ -91,6 +89,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/api/v1/auth/login",
                         "/api/v1/users/register",
+                        "/api/v1/users/register-admin",
                         "/api/v1/users/verify-email",
                         "/api/v1/auth/forgot-password",
                         "/api/v1/auth/reset-password",
