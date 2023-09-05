@@ -5,6 +5,7 @@ import lombok.Setter;
 import rw.netmart.ecommerce.v1.audits.InitiatorAudit;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ public class Category extends InitiatorAudit {
     private String name;
 
     private String description;
+
 
 
     @OneToMany(fetch = FetchType.EAGER)

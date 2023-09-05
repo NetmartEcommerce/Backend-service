@@ -8,7 +8,7 @@ import rw.netmart.ecommerce.v1.models.Product;
 import rw.netmart.ecommerce.v1.models.SubCategory;
 import rw.netmart.ecommerce.v1.repositories.IProductRepository;
 import rw.netmart.ecommerce.v1.repositories.ISubCategoriesRepository;
-import rw.netmart.ecommerce.v1.repositories.ManufacturerRepository;
+import rw.netmart.ecommerce.v1.services.IManufacturerService;
 import rw.netmart.ecommerce.v1.services.IProductService;
 
 import java.util.List;
@@ -17,21 +17,21 @@ import java.util.UUID;
 @Service
 public class ProductServiceImpl implements IProductService {
 
-    private final IProductRepository productRepository;
+    private final IManufacturerService manufacturerService;
     private final ISubCategoriesRepository subCategoriesRepository;
-    private final ManufacturerRepository manufacturerRepository;
+    private final IProductRepository productRepository;
+    public ProductServiceImpl(IManufacturerService manufacturerService, ISubCategoriesRepository subCategoriesRepository, IProductRepository productRepository) {
 
-    public ProductServiceImpl(IProductRepository productRepository, ISubCategoriesRepository subCategoriesRepository, ManufacturerRepository manufacturerRepository) {
-        this.productRepository = productRepository;
+        this.manufacturerService = manufacturerService;
         this.subCategoriesRepository = subCategoriesRepository;
-        this.manufacturerRepository = manufacturerRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
     public Product createProduct(CreateProductDto dto) {
-        SubCategory category = subCategoriesRepository.findById(dto.getCategoryid()).orElseThrow(()-> new ResourceNotFoundException("Illustration"));
-        Manufacturer manufacturer = manufacturerRepository.findById(dto.getManufacturerId()).orElseThrow(()-> new ResourceNotFoundException(("Manufacturer")));
-        Product product = new Product(dto.getName(),category, dto.getModel(), dto.getDescription(), manufacturer, dto.getPrice(), dto.getDiscountRate(), dto.getInStock(), dto.getSold() );
+        Manufacturer manufacturer = manufacturerService.findManufacturerById(dto.getManufacturer());
+        SubCategory subCategory = subCategoriesRepository.findById(dto.getSubCategory()).orElseThrow(()->new ResourceNotFoundException("Sub category"));
+        Product product = new Product(dto, manufacturer, subCategory);
         productRepository.save(product);
         return product;
     }
@@ -44,20 +44,28 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public Product updateProduct(UUID id, CreateProductDto dto) {
-        Product product =  productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product"));
-        SubCategory category = subCategoriesRepository.findById(dto.getCategoryid()).orElseThrow(()-> new ResourceNotFoundException("Illustration"));
-        Manufacturer manufacturer = manufacturerRepository.findById(dto.getManufacturerId()).orElseThrow(()-> new ResourceNotFoundException(("Manufacturer")));
-        product.setCategory(category);
-//        product.setName(dto.getName());
-        product.setModel(dto.getModel());
-        product.setDescription(dto.getDescription());
-        product.setPrice(Float.valueOf(dto.getPrice()));
-        product.setInStock(dto.getInStock());
-        product.setManufacturer(manufacturer);
-        productRepository.save(product);
-        return product;
+        Product product =  this.findProductById(id);
+        SubCategory category = subCategoriesRepository.findById(dto.getSubCategory()).orElseThrow(()-> new ResourceNotFoundException("subCategory"));
+        Manufacturer manufacturer = manufacturerService.findManufacturerById(dto.getManufacturer());
+        Product newProduct = new Product(dto, manufacturer, category);
+        product.setBrand(newProduct.getBrand());
+        product.setManufacturer(newProduct.getManufacturer());
+        product.setCategory(newProduct.getCategory());
+        product.setPrice(newProduct.getPrice());
+        product.setCompany(newProduct.getCompany());
+        product.setName(newProduct.getName());
+        product.setCrossed_price(newProduct.getCrossed_price());
+        product.setDiscount(newProduct.getDiscount());
+        product.setInStock(newProduct.getInStock());
+        product.setWarranty(newProduct.getWarranty());
+        product.setCategory(newProduct.getCategory());
+        return productRepository.save(product);
     }
 
+    @Override
+    public Product findProductById(UUID id){
+        return productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product"));
+    }
     @Override
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -72,7 +80,7 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public Product soldout(UUID id) {
         Product product = getProductById(id);
-        product.setSold(1);
+        product.setInStock(0);
         productRepository.save(product);
         return product;
     }

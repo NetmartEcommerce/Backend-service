@@ -19,7 +19,7 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createProduct(@RequestBody CreateProductDto dto){
-        return ResponseEntity.ok().body(ApiResponse.success(productService.createProduct(dto)));
+        return ResponseEntity.ok().body(ApiResponse.success(productService.createProduct(dto), "Product created successfully!"));
     }
 
     @DeleteMapping("/delete")

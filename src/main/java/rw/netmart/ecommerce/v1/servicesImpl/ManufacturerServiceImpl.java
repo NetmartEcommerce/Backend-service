@@ -60,4 +60,9 @@ public class ManufacturerServiceImpl implements IManufacturerService {
     public List<Manufacturer> getManufacturers() {
         return manufacturerRepository.findAll();
     }
+
+    @Override
+    public Manufacturer findManufacturerById(UUID id) {
+        return manufacturerRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("manufacturer"));
+    }
 }

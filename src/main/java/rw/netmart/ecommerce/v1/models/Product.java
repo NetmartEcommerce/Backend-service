@@ -1,68 +1,71 @@
 package rw.netmart.ecommerce.v1.models;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import rw.netmart.ecommerce.v1.audits.InitiatorAudit;
+import rw.netmart.ecommerce.v1.dtos.CreateProductDto;
+import rw.netmart.ecommerce.v1.enums.EProductStatus;
+import rw.netmart.ecommerce.v1.fileHandling.File;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@Entity()
+@Table(name="product")
 @AllArgsConstructor
-@Table(name="products")
-public class Product {
+@NoArgsConstructor
+public class Product extends InitiatorAudit {
+
+    @GeneratedValue()
     @Id
-    @GeneratedValue
     private UUID id;
 
-    private String description;
-
-    private String text;
+    private String name;
 
     private String company;
 
     private String brand;
 
-    private String model;
+    private String warranty;
 
-    private String currency;
+    private Float price;
+
+    private Float crossed_price;
+
+    private Float discount;
+
+    private EProductStatus status;
+
+    private Integer inStock;
+
+    @OneToMany
+    private List<Illustration> illustrations;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private SubCategory category;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "manufacturer")
     private Manufacturer manufacturer;
-    private Float price;
 
-    private Integer discountRate;
 
-    private Float crossedPrice;
-
-    private Integer inStock;
-
-    private Integer sold;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "product_manufacturer", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "manufacturer_id"))
-    private List<Illustration> illustrations;
-
-    public Product(SubCategory category, String model, String description, Manufacturer manufacturer, Float price, Integer discountRate, Integer inStock, Integer sold) {
-        this.category = category;
-        this.model = model;
-        this.description = description;
+    public Product(CreateProductDto dto, Manufacturer manufacturer, SubCategory subCategory) {
+        this.name = dto.getName();
+        this.company = dto.getCompany();
+        this.brand = dto.getBrand();
+        this.warranty = dto.getWarranty();
+        this.price = dto.getPrice();
+        this.crossed_price = dto.getCrossed_price();
+        this.discount = dto.getDiscount();
+        this.status =  dto.getStatus();
+        this.inStock = dto.getInstock();
+        this.category = subCategory;
         this.manufacturer = manufacturer;
-        this.price = price;
-        this.discountRate = discountRate;
-        this.inStock = inStock;
-        this.sold = sold;
-    }
-
-    public Product(String name, SubCategory category, String model, String description, Manufacturer manufacturer, Float price, Integer discountRate, Integer inStock, Integer sold) {
     }
 }

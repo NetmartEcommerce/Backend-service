@@ -12,6 +12,8 @@ public interface IProductService {
 
     Product updateProduct(UUID id, CreateProductDto dto);
 
+    Product findProductById(UUID id);
+
     List<Product> getAllProducts();
 
     Product getProductById(UUID id);

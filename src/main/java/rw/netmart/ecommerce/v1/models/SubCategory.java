@@ -1,10 +1,14 @@
 package rw.netmart.ecommerce.v1.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import rw.netmart.ecommerce.v1.audits.InitiatorAudit;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +17,8 @@ import java.util.UUID;
 @Setter
 @Entity()
 @Table(name="subcategories")
+@AllArgsConstructor
+@NoArgsConstructor
 public class SubCategory extends InitiatorAudit {
     @Id
     @GeneratedValue
@@ -26,10 +32,8 @@ public class SubCategory extends InitiatorAudit {
     @JoinColumn(name= "category_id")
     private Category category;
 
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "product_categories", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Product> products;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
 
 
 }

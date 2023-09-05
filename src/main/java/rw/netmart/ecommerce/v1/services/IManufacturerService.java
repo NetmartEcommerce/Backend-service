@@ -16,4 +16,6 @@ public interface IManufacturerService {
     String removeManufacturer(UUID id);
 
     List<Manufacturer> getManufacturers();
+
+    Manufacturer findManufacturerById(UUID id);
 }

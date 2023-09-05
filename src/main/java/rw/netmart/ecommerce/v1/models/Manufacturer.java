@@ -33,8 +33,7 @@ public class Manufacturer extends InitiatorAudit {
 
     private EManufacturerStatus status =  EManufacturerStatus.ACTIVE;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "product_manufacturer", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "manufacturer_id"))
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Product> products;
 
 
