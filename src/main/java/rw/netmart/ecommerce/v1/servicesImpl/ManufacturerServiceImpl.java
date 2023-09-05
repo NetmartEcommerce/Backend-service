@@ -1,31 +1,40 @@
 package rw.netmart.ecommerce.v1.servicesImpl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import rw.netmart.ecommerce.v1.dtos.CreateManufacturerDto;
 import rw.netmart.ecommerce.v1.enums.EManufacturerStatus;
 import rw.netmart.ecommerce.v1.exceptions.ResourceNotFoundException;
+import rw.netmart.ecommerce.v1.fileHandling.File;
 import rw.netmart.ecommerce.v1.models.Manufacturer;
 import rw.netmart.ecommerce.v1.repositories.ManufacturerRepository;
-import rw.netmart.ecommerce.v1.services.ManufacturerService;
+import rw.netmart.ecommerce.v1.services.IFileService;
+import rw.netmart.ecommerce.v1.services.IManufacturerService;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class ManufacturerServiceImpl implements ManufacturerService {
+public class ManufacturerServiceImpl implements IManufacturerService {
 
     private final ManufacturerRepository manufacturerRepository;
+    private final IFileService fileService;
 
-    public ManufacturerServiceImpl(ManufacturerRepository manufacturerRepository) {
+    @Value("${uploads.directory.manufacturer_logos}")
+    private String directory;
+
+    public ManufacturerServiceImpl(ManufacturerRepository manufacturerRepository, IFileService fileService) {
         this.manufacturerRepository = manufacturerRepository;
+        this.fileService = fileService;
     }
 
     @Override
-    public Manufacturer createManufacturer(CreateManufacturerDto dto) {
-        Manufacturer manufacturer = new Manufacturer();
-        manufacturer.setName(dto.getName());
-        manufacturer.setDescription(dto.getDescription());
-        manufacturer.setStatus(EManufacturerStatus.ACTIVE);
+    public Manufacturer createManufacturer(CreateManufacturerDto dto, MultipartFile file) {
+        Manufacturer manufacturer = manufacturerRepository.save(new Manufacturer(dto.getName(), dto.getDescription()));
+        File newFile = null;
+        newFile =  fileService.create(file, directory);
+        manufacturer.setLogo(newFile);
         manufacturerRepository.save(manufacturer);
         return manufacturer;
     }

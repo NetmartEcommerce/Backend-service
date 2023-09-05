@@ -1,5 +1,6 @@
 package rw.netmart.ecommerce.v1.controllers;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("api/v1/category")
+@CrossOrigin
 public class CategoryController {
 
 
@@ -33,7 +35,7 @@ public class CategoryController {
 
     @DeleteMapping(path="/delete")
     public ResponseEntity<ApiResponse> deleteCategory(@Valid @RequestParam UUID id){
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(categoryService.removeCategory(id)));
+        return ResponseEntity.status(HttpStatus.OK).body(   ApiResponse.success(categoryService.removeCategory(id)));
     }
 
     @PutMapping(path= "/update")
@@ -53,5 +55,10 @@ public class CategoryController {
     @GetMapping()
     public ResponseEntity<ApiResponse> getCategories(){
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(categoryService.getCategories()));
+    }
+
+    @GetMapping("/sub-categories/{id}")
+    public ResponseEntity<ApiResponse> getSubCategoriesById(@PathVariable("id") UUID id){
+        return ResponseEntity.ok(ApiResponse.success(categoryService.getSubCategories(id)));
     }
 }

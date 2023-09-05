@@ -24,6 +24,11 @@ public class ApiResponse {
         this.success = success;
         this.data = data;
     }
+    public ApiResponse(boolean success, Object data, String message) {
+        this.success = success;
+        this.data = data;
+        this.message = message;
+    }
 
     public ApiResponse(boolean success) {
         this.success = success;
@@ -31,6 +36,10 @@ public class ApiResponse {
 
     public static ApiResponse success(Object data) {
         return new ApiResponse(true, data);
+    }
+
+    public static ApiResponse success(Object data, String message) {
+        return new ApiResponse(true, data, message);
     }
 
     public static ApiResponse fail(Object data) {

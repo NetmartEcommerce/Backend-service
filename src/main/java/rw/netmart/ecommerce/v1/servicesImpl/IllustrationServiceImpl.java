@@ -51,6 +51,7 @@ public class IllustrationServiceImpl implements IIllustrationService {
         return illustrationRepository.save(illustration);
     }
 
+
     @Override
     public String removeIllustration(UUID id) {
         illustrationRepository.deleteById(id);

@@ -83,4 +83,10 @@ public class CategoryServiceImpl implements ICategoryService {
         subCategoriesRepository.save(category1);
         return category1;
     }
+
+    @Override
+    public Set<SubCategory> getSubCategories(UUID id) {
+        Category category1 = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("category"));
+        return category1.getSubCategories();
+    }
 }

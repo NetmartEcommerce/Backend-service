@@ -2,6 +2,7 @@ package rw.netmart.ecommerce.v1.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import rw.netmart.ecommerce.v1.audits.InitiatorAudit;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Setter
 @Entity()
 @Table(name="subcategories")
-public class SubCategory {
+public class SubCategory extends InitiatorAudit {
     @Id
     @GeneratedValue
     private UUID id;

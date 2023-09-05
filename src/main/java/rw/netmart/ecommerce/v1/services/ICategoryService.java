@@ -7,6 +7,7 @@ import rw.netmart.ecommerce.v1.models.Category;
 import rw.netmart.ecommerce.v1.models.SubCategory;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface ICategoryService {
@@ -21,4 +22,6 @@ public interface ICategoryService {
     SubCategory removeSubCategory(UUID id);
 
     SubCategory updateSubCategory(UUID id, CreateSubCategoryDto dto);
+
+    Set<SubCategory> getSubCategories(UUID id);
 }

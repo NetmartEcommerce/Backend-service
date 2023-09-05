@@ -1,9 +1,11 @@
 package rw.netmart.ecommerce.v1.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import rw.netmart.ecommerce.v1.dtos.CreateManufacturerDto;
 import rw.netmart.ecommerce.v1.payloads.ApiResponse;
-import rw.netmart.ecommerce.v1.services.ManufacturerService;
+import rw.netmart.ecommerce.v1.services.IManufacturerService;
+
 import javax.validation.Valid;
 import java.util.UUID;
 
@@ -12,15 +14,16 @@ import java.util.UUID;
 @CrossOrigin
 public class ManufacturerController {
 
-    private final ManufacturerService manufacturerService;
+    private final IManufacturerService manufacturerService;
 
-    public ManufacturerController(ManufacturerService manufacturerService) {
+    public ManufacturerController(IManufacturerService manufacturerService) {
         this.manufacturerService = manufacturerService;
     }
 
     @PostMapping("create")
-    public ResponseEntity<ApiResponse> createManufacturer(@Valid @RequestBody CreateManufacturerDto dto){
-        return ResponseEntity.ok().body(ApiResponse.success(manufacturerService.createManufacturer(dto)));
+    public ResponseEntity<ApiResponse> createManufacturer(@Valid @RequestParam("description") String description, @RequestParam("name") String name, @RequestParam("file") MultipartFile file){
+        CreateManufacturerDto createManufacturerDto =  new CreateManufacturerDto(description, name);
+        return ResponseEntity.ok().body(ApiResponse.success(manufacturerService.createManufacturer(createManufacturerDto, file), "Added manufacturer successfully!"));
     }
     @PutMapping("update")
     public ResponseEntity<ApiResponse> updateManufacturer(@Valid @RequestBody CreateManufacturerDto dto, @RequestParam("id") UUID id){

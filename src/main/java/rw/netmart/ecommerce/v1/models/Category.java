@@ -2,6 +2,7 @@ package rw.netmart.ecommerce.v1.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import rw.netmart.ecommerce.v1.audits.InitiatorAudit;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-public class Category {
+public class Category extends InitiatorAudit {
 
     @Id
     @GeneratedValue
