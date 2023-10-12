@@ -9,11 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>rw.rca.nesa</groupId>
-	<artifactId>accreditation</artifactId>
+	<artifactId>netmart</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
-	<name>accreditation</name>
-	<description>accreditation</description>
+	<packaging>jar</packaging>
+	<name>netmart</name>
+	<description>netmart</description>
 	<properties>
 		<java.version>1.8</java.version>
 		<springfox.swagger.version>2.9.2</springfox.swagger.version>
