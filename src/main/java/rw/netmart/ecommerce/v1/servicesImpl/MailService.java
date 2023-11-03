@@ -46,14 +46,14 @@ public class MailService {
     }
 
     @Async
-    public void sendResetPassword(User user) throws MessagingException{
+    public void sendResetPassword(User user){
         String link = clientHost + "/reset-password?email=" + user.getEmail() + "&code=" + user.getActivationCode();
         Mail mail = new Mail(appName, "Verify Your email to complete password reset", user.getFirstName(), user.getEmail(), "verify-email", link);
         sendEmail(mail);
     }
 
 
-    public void sendEmail(Mail mail) throws MessagingException{
+    public void sendEmail(Mail mail){
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED, StandardCharsets.UTF_8.name());

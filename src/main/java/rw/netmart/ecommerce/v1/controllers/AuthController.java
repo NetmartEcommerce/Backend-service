@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginDto signInDTO) throws Exception {
+    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginDto signInDTO) {
         String jwt = null;
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(),signInDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -55,7 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<ApiResponse> login(@Valid @RequestBody ForgotPasswordDto dto) throws MessagingException {
+    public ResponseEntity<ApiResponse> forgot_password(@Valid @RequestBody ForgotPasswordDto dto) {
         User user = userService.getUserByEmail(dto.getEmail());
         user.setActivationCode(Utility.randomUUID(6,0,'N'));
         this.userService.save(user);

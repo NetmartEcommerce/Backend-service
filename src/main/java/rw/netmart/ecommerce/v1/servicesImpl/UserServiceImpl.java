@@ -123,7 +123,7 @@ public class UserServiceImpl implements IUserServices {
         }
 
     @Override
-    public User getUserByEmail(String email) throws BadRequestException{
+    public User getUserByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User" ,"email", email));
     }
 
