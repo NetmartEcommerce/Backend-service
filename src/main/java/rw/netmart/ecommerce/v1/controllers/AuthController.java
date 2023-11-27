@@ -48,8 +48,16 @@ public class AuthController {
     public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginDto signInDTO) {
         String jwt = null;
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInDTO.getEmail(),signInDTO.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        jwt = jwtTokenProvider.generateToken(authentication);
+        try {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            jwt = jwtTokenProvider.generateToken(authentication);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println();
 
         return ResponseEntity.ok(ApiResponse.success(new JWTAuthenticationResponse(jwt)));
     }
@@ -62,11 +70,6 @@ public class AuthController {
         mailService.sendResetPassword(user);
         return ResponseEntity.ok(new ApiResponse(true, "Password reset email sent successfully"));
     }
-    @PostMapping("/verify-code")
-    public ResponseEntity<ApiResponse> checkCode(@RequestBody CheckValidCode dto){
-        return ResponseEntity.ok(new ApiResponse(userService.verifyCode(dto.getEmail(), dto.getActivationCode())));
-    }
-
     @PostMapping(path="/reset-password")
     public ResponseEntity<ApiResponse> resetPassword(@RequestBody @Valid ResetPassword dto){
         User user = this.userService.getUserByEmail(dto.getEmail());

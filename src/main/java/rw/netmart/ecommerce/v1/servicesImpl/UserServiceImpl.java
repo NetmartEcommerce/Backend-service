@@ -2,8 +2,6 @@ package rw.netmart.ecommerce.v1.servicesImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,10 +18,11 @@ import rw.netmart.ecommerce.v1.models.User;
 import rw.netmart.ecommerce.v1.repositories.IUserRepository;
 import rw.netmart.ecommerce.v1.services.IRoleService;
 import rw.netmart.ecommerce.v1.services.IUserServices;
+import rw.netmart.ecommerce.v1.utils.Utility;
 
 
-import javax.mail.MessagingException;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -65,7 +64,6 @@ public class UserServiceImpl implements IUserServices {
         user.setEmail(dto.getEmail());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
-        user.setStatus(EUserStatus.PENDING);
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setPassword(encodePassword);
         user.setRoles(Collections.singleton(role));
@@ -128,22 +126,18 @@ public class UserServiceImpl implements IUserServices {
     }
 
     @Override
-    public String verifyEmail(String email, String activationCode) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof UsernamePasswordAuthenticationToken) {
-            System.out.println("yes");
-            // User is authenticated with their actual credentials
-        } else {
-            System.out.println("no");
-            // User is not authenticated or authenticated anonymously
-        }
+    public void verifyEmail(String email, String activationCode) {
         User user = getUserByEmail(email);
+        if (user.getStatus() != EUserStatus.WAIT_EMAIL_VERIFICATION)
+            throw new BadRequestException("Your account is " + user.getStatus().toString().toLowerCase(Locale.ROOT));
+
         if(Objects.equals(user.getActivationCode(), activationCode)){
             user.setStatus(EUserStatus.ACTIVE);
+            user.setActivationCode(Utility.randomUUID(6, 0, 'N'));
             userRepository.save(user);
-            return "Account successfully verified";
+        }else{
+            throw new BadRequestException("The provided code is invalid");
         }
-        return "Could not verify account!";
     }
 
 
@@ -159,10 +153,10 @@ public class UserServiceImpl implements IUserServices {
     @Override
     public User updateUserDetails(UpdateUserDto userdto){
         User user = getLoggedInUser();
-       user.setEmail(user.getEmail());
-       user.setFirstName(user.getFirstName());
-       user.setLastName(user.getLastName());
-       user.setPhoneNumber(user.getPhoneNumber());
+       user.setEmail(userdto.getEmail());
+       user.setFirstName(userdto.getFirstName());
+       user.setLastName(userdto.getLastName());
+       user.setPhoneNumber(userdto.getPhoneNumber());
        userRepository.save(user);
        return user;
     }

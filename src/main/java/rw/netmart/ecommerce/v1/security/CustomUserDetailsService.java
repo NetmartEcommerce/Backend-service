@@ -32,14 +32,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String s) throws BadRequestException {
         User user = userRepository.findByEmailOrPhoneNumber(s, s).orElseThrow(() -> new UsernameNotFoundException("user not found with email or mobile of " + s));
-        if (user.getStatus() == EUserStatus.WAIT_EMAIL_VERIFICATION.WAIT_EMAIL_VERIFICATION)
+        if (user.getStatus() == EUserStatus.WAIT_EMAIL_VERIFICATION)
             throw new BadRequestException("You must verify your email to continue with the app, visit your email");
         else if (user.getStatus() == EUserStatus.DEACTIVATED)
             throw new BadRequestException("Your account is deactivated ask the re activation");
-        else if (user.getStatus() == EUserStatus.PENDING)
-            throw new BadRequestException("Your account is pending wait for the approval");
-        else if (user.getStatus() == EUserStatus.REJECTED)
-            throw new BadRequestException("Your account is rejected");
         else if (user.getStatus() == EUserStatus.ACTIVE)
             return UserPrincipal.create(user);
         else

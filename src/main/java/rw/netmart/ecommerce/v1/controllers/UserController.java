@@ -38,7 +38,8 @@ public class UserController {
 
     @PostMapping(path = "/verify-email")
     public ResponseEntity<ApiResponse> verifyAccount(@Valid @RequestBody VerifyEmailDto dto){
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(userService.verifyEmail(dto.getEmail(), dto.getActivationCode())));
+        userService.verifyEmail(dto.getEmail(), dto.getActivationCode());
+        return ResponseEntity.ok(new ApiResponse(true, "Email verification successfull"));
     }
 
     @GetMapping("/user")
