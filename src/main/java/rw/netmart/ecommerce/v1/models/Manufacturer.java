@@ -1,5 +1,6 @@
 package rw.netmart.ecommerce.v1.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class Manufacturer extends InitiatorAudit {
     private EManufacturerStatus status =  EManufacturerStatus.ACTIVE;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Product> products;
 
 
